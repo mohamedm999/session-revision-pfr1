@@ -215,9 +215,9 @@ class Client extends Personne {
   
   public function getHistorique(){
     
-    foreach( $this->reservations as reservation){
+    foreach( $this->reservations as $this->reservation){
       
-      reservation->ReservationDetailes();
+      $this->reservation->ReservationDetailes();
       
     }
 
@@ -249,10 +249,10 @@ class Agence {
   
   public function rechercherVehiculeDisponible($type){
     
-    foreach($this->vehicules as vehicule){
+    foreach($this->vehicules as $this->vehicule){
       
-      if(vehicule->disponible = true && vehicule->getType() = $type ){
-        return vehicule->afficherDetails() ;
+      if($this->vehicule->disponible = true && $this->vehicule->getType() = $type ){
+        return $this->vehicule->afficherDetails() ;
       }
     }
   }

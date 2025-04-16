@@ -15,7 +15,7 @@ abstract class Vehicule{
   protected $prixJour ;
   protected $disponible  ;
   
-  private static $counter ;
+  private static $counter = 0;
   
   
   public function __construct($immatriculation,$marque,$modele,$prixJour,$disponible = true){
@@ -44,7 +44,7 @@ abstract class Vehicule{
   
   public function estDisponible(){
     
-    if ($this->disponible = true ){
+    if ($this->disponible == true){
       
       echo "it's disponible" ;
       
@@ -54,7 +54,7 @@ abstract class Vehicule{
     }
   }
   
-  abstract public function  getType() ;
+  abstract public function getType() ;
   
   public function getPrixJour(){
     
@@ -72,7 +72,7 @@ class Voiture extends Vehicule implements ReservableInterface {
      
      public function __construct($immatriculation,$marque,$modele,$prixJour,$disponible = true,$nbPortes,$transmission){
        
-       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible = true) ;
+       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible) ;
        
        $this->nbPortes = $nbPortes ;
        $this->transmission = $transmission ;
@@ -91,9 +91,9 @@ class Voiture extends Vehicule implements ReservableInterface {
     
       }
      
-     public function reserver(Client $client, DateTime $dateDebut, int $nbJours){
+     public function reserver(Client $client, DateTime $dateDebut, int $nbJours): Reservation{
        
-       return new Reservation($client,$this,$dateDebut,$nbJours)  ;
+       return new Reservation($client, $this, $dateDebut, $nbJours);
        
      }
 }
@@ -104,7 +104,7 @@ class Moto extends Vehicule implements ReservableInterface {
      
      public function __construct($immatriculation,$marque,$modele,$prixJour,$disponible = true,$cylindree){
        
-       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible = true) ;
+       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible) ;
        
        $this->cylindree = $cylindree ;
 
@@ -122,9 +122,9 @@ class Moto extends Vehicule implements ReservableInterface {
     
       }
      
-     public function reserver(Client $client, DateTime $dateDebut, int $nbJours){
+     public function reserver(Client $client, DateTime $dateDebut, int $nbJours): Reservation{
        
-       return new Reservation($client,$this,$dateDebut,$nbJours)  ;
+       return new Reservation($client, $this, $dateDebut, $nbJours);
        
      }
   
@@ -137,7 +137,7 @@ class Camion extends Vehicule implements ReservableInterface {
      
      public function __construct($immatriculation,$marque,$modele,$prixJour,$disponible = true,$capaciteTonnage){
        
-       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible = true) ;
+       parent::__construct($immatriculation,$marque,$modele,$prixJour,$disponible) ;
        
        $this->capaciteTonnage = $capaciteTonnage ;
 
@@ -156,9 +156,9 @@ class Camion extends Vehicule implements ReservableInterface {
       }
      
      
-      public function reserver(Client $client, DateTime $dateDebut, int $nbJours){
+      public function reserver(Client $client, DateTime $dateDebut, int $nbJours): Reservation{
        
-       return new Reservation($client,$this,$dateDebut,$nbJours)  ; 
+       return new Reservation($client, $this, $dateDebut, $nbJours);
        
      }
   
@@ -215,9 +215,9 @@ class Client extends Personne {
   
   public function getHistorique(){
     
-    foreach( $this->reservations as reservation){
+    foreach($this->reservations as $reservation){
       
-      reservation->ReservationDetailes();
+      $reservation->ReservationDetailes();
       
     }
 
@@ -249,17 +249,17 @@ class Agence {
   
   public function rechercherVehiculeDisponible($type){
     
-    foreach($this->vehicules as vehicule){
+    foreach($this->vehicules as $vehicule){
       
-      if(vehicule->disponible = true && vehicule->getType() = $type ){
-        return vehicule->afficherDetails() ;
+      if($vehicule->disponible == true && $vehicule->getType() == $type){
+        return $vehicule->afficherDetails();
       }
     }
   }
   
-  public function faireReservation(Client $client, Vehicule $v, DateTime $dateDebut, int $nbJours){
+  public function faireReservation(Client $client, ReservableInterface $v, DateTime $dateDebut, int $nbJours){
     
-    return new Reservation($client,$this,$dateDebut,$nbJours)  ;
+    return $v->reserver($client, $dateDebut, $nbJours);
   }
 }
 	
@@ -272,12 +272,13 @@ class Reservation {
   private $nbJours ;
   private $statut ;
   
-  public function __construct(Client $client, Vehicule $v, DateTime $dateDebut, int $nbJours){
+  public function __construct(Client $client, Vehicule $vehicule, DateTime $dateDebut, int $nbJours){
     
     $this->client = $client ;
     $this->vehicule = $vehicule ;
     $this->dateDebut = $dateDebut ;
     $this->nbJours = $nbJours ;
+    $this->statut = "pending";
   }
   
   
